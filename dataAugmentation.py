@@ -95,11 +95,18 @@ class DataAugmentation:
 
         # Application of the stretching/contraction operation
         returns = newTradingEnv.data['Close'].pct_change() * factor
+        
+        # Risoluzione ChainedAssignment/FutureWarning: mazziamo le posizioni delle colonne prima del loop
+        col_close = newTradingEnv.data.columns.get_loc('Close')
+        col_low = newTradingEnv.data.columns.get_loc('Low')
+        col_high = newTradingEnv.data.columns.get_loc('High')
+        col_open = newTradingEnv.data.columns.get_loc('Open')
+
         for i in range(1, len(newTradingEnv.data.index)):
-            newTradingEnv.data['Close'][i] = newTradingEnv.data['Close'][i-1] * (1 + returns[i])
-            newTradingEnv.data['Low'][i] = newTradingEnv.data['Close'][i] * tradingEnv.data['Low'][i]/tradingEnv.data['Close'][i]
-            newTradingEnv.data['High'][i] = newTradingEnv.data['Close'][i] * tradingEnv.data['High'][i]/tradingEnv.data['Close'][i]
-            newTradingEnv.data['Open'][i] = newTradingEnv.data['Close'][i-1]
+            newTradingEnv.data.iat[i, col_close] = newTradingEnv.data.iat[i-1, col_close] * (1 + returns.iloc[i])
+            newTradingEnv.data.iat[i, col_low] = newTradingEnv.data.iat[i, col_close] * tradingEnv.data['Low'].iloc[i]/tradingEnv.data['Close'].iloc[i]
+            newTradingEnv.data.iat[i, col_high] = newTradingEnv.data.iat[i, col_close] * tradingEnv.data['High'].iloc[i]/tradingEnv.data['Close'].iloc[i]
+            newTradingEnv.data.iat[i, col_open] = newTradingEnv.data.iat[i-1, col_close]
 
         # Return the new trading environment generated
         return newTradingEnv
@@ -119,20 +126,27 @@ class DataAugmentation:
         # Creation of a new trading environment
         newTradingEnv = copy.deepcopy(tradingEnv)
 
+        # Ricaviamo gli indici per evitare ChainedAssignmentError e FutureWarning
+        col_close = newTradingEnv.data.columns.get_loc('Close')
+        col_low = newTradingEnv.data.columns.get_loc('Low')
+        col_high = newTradingEnv.data.columns.get_loc('High')
+        col_volume = newTradingEnv.data.columns.get_loc('Volume')
+        col_open = newTradingEnv.data.columns.get_loc('Open')
+
         # Generation of the new noisy time series
         for i in range(1, len(newTradingEnv.data.index)):
             # Generation of artificial gaussian random noises
-            price = newTradingEnv.data['Close'][i]
-            volume = newTradingEnv.data['Volume'][i]
+            price = newTradingEnv.data.iat[i, col_close]
+            volume = newTradingEnv.data.iat[i, col_volume]
             priceNoise = np.random.normal(0, stdev*(price/100))
             volumeNoise = np.random.normal(0, stdev*(volume/100))
 
-            # Addition of the artificial noise generated
-            newTradingEnv.data['Close'][i] *= (1 + priceNoise/100)
-            newTradingEnv.data['Low'][i] *= (1 + priceNoise/100)
-            newTradingEnv.data['High'][i] *= (1 + priceNoise/100)
-            newTradingEnv.data['Volume'][i] *= (1 + volumeNoise/100)
-            newTradingEnv.data['Open'][i] = newTradingEnv.data['Close'][i-1]
+            # Addition of the artificial noise generated usando .iat
+            newTradingEnv.data.iat[i, col_close] *= (1 + priceNoise/100)
+            newTradingEnv.data.iat[i, col_low] *= (1 + priceNoise/100)
+            newTradingEnv.data.iat[i, col_high] *= (1 + priceNoise/100)
+            newTradingEnv.data.iat[i, col_volume] *= (1 + volumeNoise/100)
+            newTradingEnv.data.iat[i, col_open] = newTradingEnv.data.iat[i-1, col_close]
 
         # Return the new trading environment generated
         return newTradingEnv
@@ -157,13 +171,22 @@ class DataAugmentation:
         newTradingEnv.data['Low'] = newTradingEnv.data['Low'].rolling(window=order).mean()
         newTradingEnv.data['High'] = newTradingEnv.data['High'].rolling(window=order).mean()
         newTradingEnv.data['Volume'] = newTradingEnv.data['Volume'].rolling(window=order).mean()
+        
+        # Ricaviamo gli indici numerici delle colonne
+        col_close = newTradingEnv.data.columns.get_loc('Close')
+        col_low = newTradingEnv.data.columns.get_loc('Low')
+        col_high = newTradingEnv.data.columns.get_loc('High')
+        col_volume = newTradingEnv.data.columns.get_loc('Volume')
+        col_open = newTradingEnv.data.columns.get_loc('Open')
+
         for i in range(order):
-            newTradingEnv.data['Close'][i] = tradingEnv.data['Close'][i]
-            newTradingEnv.data['Low'][i] = tradingEnv.data['Low'][i]
-            newTradingEnv.data['High'][i] = tradingEnv.data['High'][i]
-            newTradingEnv.data['Volume'][i] = tradingEnv.data['Volume'][i]
+            newTradingEnv.data.iat[i, col_close] = tradingEnv.data['Close'].iloc[i]
+            newTradingEnv.data.iat[i, col_low] = tradingEnv.data['Low'].iloc[i]
+            newTradingEnv.data.iat[i, col_high] = tradingEnv.data['High'].iloc[i]
+            newTradingEnv.data.iat[i, col_volume] = tradingEnv.data['Volume'].iloc[i]
+            
         newTradingEnv.data['Open'] = newTradingEnv.data['Close'].shift(1)
-        newTradingEnv.data['Open'][0] = tradingEnv.data['Open'][0]
+        newTradingEnv.data.iat[0, col_open] = tradingEnv.data['Open'].iloc[0]
 
         # Return the new trading environment generated
         return newTradingEnv
@@ -191,4 +214,3 @@ class DataAugmentation:
                     for noise in noiseRange:
                         tradingEnvList.append(self.noiseAddition(tradingEnvFiltered, noise))
         return tradingEnvList
-    

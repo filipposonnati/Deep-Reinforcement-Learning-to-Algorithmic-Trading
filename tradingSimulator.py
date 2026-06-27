@@ -280,7 +280,7 @@ class TradingSimulator:
         """
 
         # Artificial trick to assert the continuity of the Money curve
-        ratio = trainingEnv.data['Money'][-1]/testingEnv.data['Money'][0]
+        ratio = trainingEnv.data['Money'].iloc[-1]/testingEnv.data['Money'].iloc[0]
         testingEnv.data['Money'] = ratio * testingEnv.data['Money']
 
         # Concatenation of the training and testing trading dataframes

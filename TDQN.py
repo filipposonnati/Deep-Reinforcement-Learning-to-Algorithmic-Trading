@@ -377,7 +377,7 @@ class TDQN:
         self.iterations = 0
 
         # Initialization of the tensorboard writer
-        self.writer = SummaryWriter('runs/' + datetime.datetime.now().strftime("%d/%m/%Y-%H:%M:%S"))
+        self.writer = SummaryWriter('runs/' + datetime.datetime.now().strftime("%d_%m_%Y-%H_%M_%S"))
 
     
     def getNormalizationCoefficients(self, tradingEnv):
@@ -656,7 +656,7 @@ class TDQN:
             marketSymbol = trainingEnv.marketSymbol
             startingDate = trainingEnv.endingDate
             endingDate = '2020-1-1'
-            money = trainingEnv.data['Money'][0]
+            money = trainingEnv.data['Money'].iloc[0]
             stateLength = trainingEnv.stateLength
             transactionCosts = trainingEnv.transactionCosts
             testingEnv = TradingEnv(marketSymbol, startingDate, endingDate, money, stateLength, transactionCosts)
