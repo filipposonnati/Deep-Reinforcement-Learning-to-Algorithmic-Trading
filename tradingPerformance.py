@@ -101,7 +101,7 @@ class PerformanceEstimator:
                      [capital[peak], capital[through]], 'o', color='Red', markersize=5)
             plt.xlabel('Time')
             plt.ylabel('Price')
-            plt.savefig(''.join(['Figures/', 'MaximumDrawDown', '.png']))
+            plt.savefig(''.join(['Figures/','MaximumDrawDown', '.png']))
 
         return self.maxDD, self.maxDDD
     
@@ -181,9 +181,22 @@ class PerformanceEstimator:
         
         return self.performanceTable
 
-
-    def displayPerformance(self, name):
+    def displayPerformance(self, name, market=""):
         self.computePerformance()
         headers = ["Performance Indicator", name]
-        tabulation = tabulate(self.performanceTable, headers, tablefmt="fancy_grid", stralign="center")
+        tabulation = tabulate(self.performanceTable, headers, tablefmt="fancy_grid")
         print(tabulation)
+        
+        # Format market prefix safely if provided
+        market_prefix = f"{market}_" if market else ""
+        
+        # Example: Amazon_TDQN_performance.txt
+        filename = f"Performances\\{market_prefix}{name}_performance.txt"
+        
+        with open(filename, "a", encoding="utf-8") as f:
+            f.write("\n" + "="*50 + "\n")
+            f.write(f"Execution Context: {market or 'Unknown Market'} | Strategy: {name}\n")
+            f.write("="*50 + "\n")
+            f.write(tabulation)
+            f.write("\n")
+        print(f"Table successfully saved/appended to {filename}")

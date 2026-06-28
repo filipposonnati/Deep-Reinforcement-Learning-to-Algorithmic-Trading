@@ -171,7 +171,7 @@ class BuyAndHold(tradingStrategy):
         
         # If required, render the trading environment backtested
         if rendering:
-            trainingEnv.render()
+            trainingEnv.render("B&H")
         
         # If required, plot the training results
         if plotTraining:
@@ -180,7 +180,7 @@ class BuyAndHold(tradingStrategy):
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(trainingEnv.data)
-            analyser.displayPerformance('B&H')
+            analyser.displayPerformance('B&H', market=trainingEnv.marketSymbol)
 
         # Return the trading environment backtested (training set)
         return trainingEnv
@@ -209,12 +209,12 @@ class BuyAndHold(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            testingEnv.render()
+            testingEnv.render("B&H")
 
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(testingEnv.data)
-            analyser.displayPerformance('B&H')
+            analyser.displayPerformance('B&H', market=testingEnv.marketSymbol)
 
         # Return the trading environment backtested (testing set)
         return testingEnv
@@ -293,7 +293,7 @@ class SellAndHold(tradingStrategy):
         
         # If required, render the trading environment backtested
         if rendering:
-            trainingEnv.render()
+            trainingEnv.render("S&H")
         
         # If required, plot the training results
         if plotTraining:
@@ -302,7 +302,7 @@ class SellAndHold(tradingStrategy):
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(trainingEnv.data)
-            analyser.displayPerformance('S&H')
+            analyser.displayPerformance('S&H', market=trainingEnv.marketSymbol)
 
         # Return the trading environment backtested (training set)
         return trainingEnv
@@ -331,12 +331,12 @@ class SellAndHold(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            testingEnv.render()
+            testingEnv.render("S&H")
 
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(testingEnv.data)
-            analyser.displayPerformance('S&H')
+            analyser.displayPerformance('S&H', market=testingEnv.marketSymbol)
 
         # Return the trading environment backtested (testing set)
         return testingEnv
@@ -521,7 +521,7 @@ class MovingAveragesTF(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            trainingEnv.render()
+            trainingEnv.render("MATF")
         
         # If required, plot the training results
         if plotTraining:
@@ -530,7 +530,7 @@ class MovingAveragesTF(tradingStrategy):
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(trainingEnv.data)
-            analyser.displayPerformance('MATF')
+            analyser.displayPerformance('MATF', market=trainingEnv.marketSymbol)
 
         # Return the trading environment backtested (training set)
         return trainingEnv
@@ -559,12 +559,12 @@ class MovingAveragesTF(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            testingEnv.render()
+            testingEnv.render("MATF")
 
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(testingEnv.data,)
-            analyser.displayPerformance('MATF')
+            analyser.displayPerformance('MATF', market=testingEnv.marketSymbol)
 
         # Return the trading environment backtested (testing set)
         return testingEnv
@@ -795,7 +795,7 @@ class MovingAveragesMR(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            trainingEnv.render()
+            trainingEnv.render("MAMR")
         
         # If required, plot the training results
         if plotTraining:
@@ -804,7 +804,7 @@ class MovingAveragesMR(tradingStrategy):
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(trainingEnv.data)
-            analyser.displayPerformance('MAMR')
+            analyser.displayPerformance('MAMR', market=trainingEnv.marketSymbol)
 
         # Return the trading environment backtested (training set)
         return trainingEnv
@@ -833,12 +833,12 @@ class MovingAveragesMR(tradingStrategy):
 
         # If required, render the trading environment backtested
         if rendering:
-            testingEnv.render()
+            testingEnv.render("MAMR")
 
         # If required, print the strategy performance in a table
         if showPerformance:
             analyser = PerformanceEstimator(testingEnv.data)
-            analyser.displayPerformance('MAMR')
+            analyser.displayPerformance('MAMR', market=testingEnv.marketSymbol)
 
         # Return the trading environment backtested (testing set)
         return testingEnv

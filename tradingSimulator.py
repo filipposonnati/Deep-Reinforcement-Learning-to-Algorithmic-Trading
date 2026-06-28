@@ -267,7 +267,7 @@ class TradingSimulator:
         analyser.cyclicityAnalysis()
 
 
-    def plotEntireTrading(self, trainingEnv, testingEnv):
+    def plotEntireTrading(self, trainingEnv, testingEnv, strategyName = ""):
         """
         GOAL: Plot the entire trading activity, with both the training
               and testing phases rendered on the same graph for
@@ -319,7 +319,21 @@ class TradingSimulator:
         # Generation of the two legends and plotting
         ax1.legend(["Price", "Long",  "Short", "Train/Test separation"])
         ax2.legend(["Capital", "Long", "Short", "Train/Test separation"])
-        plt.savefig(''.join(['Figures/', str(trainingEnv.marketSymbol), '_TrainingTestingRendering', '.png'])) 
+
+        mapping = {
+            'Buy and Hold': 'B&H', # Puoi personalizzare l'acronimo qui
+            'Sell and Hold': 'S&H',
+            'Trend Following Moving Averages': 'MovingAveragesTF',
+            'Mean Reversion Moving Averages': 'MovingAveragesMR',
+            'TDQN': 'TDQN'
+        }
+        
+        # 2. Cerca il nome abbreviato. Se non lo trova, usa il nome originale
+        strategyName = mapping.get(strategyName, strategyName)
+
+        strat_suffix = f"_{strategyName}" if strategyName else ""
+        plt.savefig(''.join(['Figures/', str(trainingEnv.marketSymbol), strat_suffix, '_TrainingTestingRendering', '.png'])) 
+
         #plt.show()
 
 
@@ -431,7 +445,7 @@ class TradingSimulator:
             
         # Show the entire unified rendering of the training and testing phases
         if rendering:
-            self.plotEntireTrading(trainingEnv, testingEnv)
+            self.plotEntireTrading(trainingEnv, testingEnv, strategyName)
 
 
         # 4. TERMINATION PHASE
@@ -549,7 +563,7 @@ class TradingSimulator:
 
         # Show the entire unified rendering of the training and testing phases
         if rendering:
-            self.plotEntireTrading(trainingEnv, testingEnv)
+            self.plotEntireTrading(trainingEnv, testingEnv, strategyName)
 
         return tradingStrategy, trainingEnv, testingEnv
 
